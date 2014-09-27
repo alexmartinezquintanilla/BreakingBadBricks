@@ -52,7 +52,7 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
     private SoundClip scSonidoColisionCaminador; 
     private boolean bPausado;    //Boleano para pausar el juego.
     private URL urlImagenCaminador = 
-            this.getClass().getResource("alien1Camina.gif");
+            this.getClass().getResource("alien1Camina.png");
     private URL urlImagenCorredor = 
             this.getClass().getResource("alien2Corre.gif");
     private URL urlImagenPausa = this.getClass().getResource("pause.png");
