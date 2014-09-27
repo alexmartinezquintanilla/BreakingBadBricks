@@ -97,9 +97,10 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
         //Se inicializa con velocidad 3
         perNena.setVelocidad(3);
 
-        // se posiciona a Nena en el centro de la pantalla
+        // se posiciona a Nena en el centro de la pantalla y en la parte inferior
         perNena.setX((getWidth() / 2) - (perNena.getAncho() / 2));
-        perNena.setY((getHeight() / 2) - (perNena.getAlto() / 2));
+//        perNena.setY((getHeight() / 2) - (perNena.getAlto() / 2));
+        perNena.setY(getHeight() - perNena.getAlto());
 
         // se posiciona a Susy en alguna parte al azar del cuadrante 
         // superior izquierdo
@@ -207,12 +208,12 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
 
         //Nena actualiza movimiento dependiendo de la tecla que se presionó
         switch (iDireccionNena) {
-            case 1:
-                perNena.abajo();
-                break;
-            case 2:
-                perNena.arriba();
-                break;
+//            case 1:
+//                perNena.abajo();
+//                break;
+//            case 2:
+//                perNena.arriba();
+//                break;
             case 3:
                 perNena.derecha();
                 break;
@@ -248,12 +249,12 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
         // instrucciones para checar colision y reacomodar personajes si 
         // es necesario
         //Checa colisiones de Nena
-        if (perNena.getY() + perNena.getAlto() > getHeight()) {
-            perNena.setY(getHeight() - perNena.getAlto());
-        }
-        if (perNena.getY() <= 0) {
-            perNena.setY(0);
-        }
+//        if (perNena.getY() + perNena.getAlto() > getHeight()) {
+//            perNena.setY(getHeight() - perNena.getAlto());
+//        }
+//        if (perNena.getY() <= 0) {
+//            perNena.setY(0);
+//        }
         if ((perNena.getX() + perNena.getAncho()) >= getWidth()) {
             perNena.setX(getWidth() - perNena.getAncho());
         }
@@ -485,28 +486,28 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
     }
 
     @Override
-    public void keyPressed(KeyEvent ke) {
+    public void keyPressed(KeyEvent keyEvent) {
         //To change body of generated methods, choose Tools | Templates.
+        // si presiono flecha para abajo
+        if (keyEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
+            iDireccionNena = 3;  // cambio la dirección hacia derecha
+        }
+        // si presiono flecha para arriba
+        if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT) {
+            iDireccionNena = 4;   // cambio la dirección hacia izq
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent keyEvent) {
-        // si presiono flecha para abajo
-        if (keyEvent.getKeyCode() == KeyEvent.VK_S) {
-            iDireccionNena = 1;  // cambio la dirección hacia abajo
-        }
-        // si presiono flecha para arriba
-        if (keyEvent.getKeyCode() == KeyEvent.VK_W) {
-            iDireccionNena = 2;   // cambio la dirección hacia arriba
-        }
-        // si presiono flecha para abajo
-        if (keyEvent.getKeyCode() == KeyEvent.VK_D) {
-            iDireccionNena = 3;  // cambio la dirección hacia abajo
-        }
-        // si presiono flecha para arriba
-        if (keyEvent.getKeyCode() == KeyEvent.VK_A) {
-            iDireccionNena = 4;   // cambio la dirección hacia arriba
-        }
+//        // si presiono flecha para abajo
+//        if (keyEvent.getKeyCode() == KeyEvent.VK_S) {
+//            iDireccionNena = 1;  // cambio la dirección hacia abajo
+//        }
+//        // si presiono flecha para arriba
+//        if (keyEvent.getKeyCode() == KeyEvent.VK_W) {
+//            iDireccionNena = 2;   // cambio la dirección hacia arriba
+//        }
         //Si presionan P booleano Pausa cambia de estado.
         if (keyEvent.getKeyCode() == KeyEvent.VK_P) {
 
