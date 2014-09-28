@@ -303,12 +303,17 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
                 scSonidoColisionCorredor.play();
             }
             if (perCorredor.colisiona(perNena)) {
+                if (perCorredor.getY() > perNena.getY()) {
+                    iMovX = -iMovX;
+                }
+                else {
                 iMovY = -iMovY;
                 if (perCorredor.getX() > (perNena.getX() + (perNena.getAncho() - perNena.getAncho() / 4)) && iMovX < 0) {
                     iMovX = -iMovX;
                 }
                 if (perCorredor.getX() < (perNena.getX() + perNena.getAncho() / 4) && iMovX > 0) {
                     iMovX = -iMovX;
+                }
                 }
                 scSonidoColisionCorredor.play();
                 
@@ -320,7 +325,15 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
             for (Object lnkCaminadore : lnkCaminadores) {
             Personaje perCaminador = (Personaje) lnkCaminadore;
             if (perCorredor.colisiona(perCaminador)) {
+                if ((perCorredor.getY() > perCaminador.getY() && iMovY < 0) 
+                        || ((perCorredor.getY() + perCorredor.getAlto()) 
+                        > (perCaminador.getY() + perCaminador.getAlto()) 
+                        && iMovY > 0)) {
+                    iMovX = -iMovX;
+                }
+                else {
                 iMovY = -iMovY;
+                }
                 scSonidoColisionCorredor.play();
             }
             }
