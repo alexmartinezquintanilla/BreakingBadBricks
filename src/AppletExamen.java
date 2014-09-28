@@ -38,7 +38,7 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
     /* objetos para manejar el buffer del Applet y este no parpadee */
     private Image imaImagenApplet;   // Imagen a proyectar en Applet	
     private Graphics graGraficaApplet;  // Objeto grafico de la Imagen
-    private URL urlImagenBackG = this.getClass().getResource("lw91.png");
+    private URL urlImagenBackG = this.getClass().getResource("fondo.png");
     private int iVidas;
     private Personaje perNena;
     private int iDireccionNena;
@@ -50,11 +50,13 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
     private SoundClip scSonidoColisionCorredor;  
     //Objeto SoundClip sonido Caminador
     private SoundClip scSonidoColisionCaminador; 
+    //Objeto SoundClip charola rota
+    private SoundClip scSonidoColisionCharolaRota; 
     private boolean bPausado;    //Boleano para pausar el juego.
     private URL urlImagenCaminador = 
-            this.getClass().getResource("alien1Camina.png");
+            this.getClass().getResource("Charola/charola.png");
     private URL urlImagenCorredor = 
-            this.getClass().getResource("alien2Corre.gif");
+            this.getClass().getResource("pelota.gif");
     private URL urlImagenPausa = this.getClass().getResource("pause.png");
     //Imagen al pausar el juego.
     Image imaImagenPausa = Toolkit.getDefaultToolkit().getImage(urlImagenPausa);
@@ -128,7 +130,7 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
 
         lnkCorredores = new LinkedList();
 
-        //en este for se crean de 8 a 10 caminadores y se guardan en la lista de caminadores
+        //se crean de 8 a 10 caminadores y se guardan en la lista de caminadores
         iAzar = (int) (Math.random() * (16 - 10) + 10);
         for (int iK = 1; iK <= iAzar; iK++) {
             posX = (int) (Math.random() * getHeight());
@@ -144,10 +146,12 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
             lnkCorredores.add(perCorredor);
         }
 
-        //creo el sonido de los corredores chocando
-        scSonidoColisionCorredor = new SoundClip("chimpcom.wav");
-        //creo el sonido  de los  caminadores chocando
-        scSonidoColisionCaminador = new SoundClip("Screaming-SoundBible.com-1597978996.wav");
+        //creo el sonido del bate golpeando la pelota
+        scSonidoColisionCorredor = new SoundClip("bate.wav");
+        //creo el sonido  de la charola golpeada la primera vez
+        scSonidoColisionCaminador = new SoundClip("Charola/charolagolpeada.wav");
+        //creo el sonido de la charola rompiéndose
+        scSonidoColisionCharolaRota = new SoundClip("Charola/charolarota.wav");
         addKeyListener(this);
     }
 
