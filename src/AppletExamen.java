@@ -97,7 +97,7 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
         perNena = new Personaje(getWidth() / 2, getHeight() / 2,
                 Toolkit.getDefaultToolkit().getImage(urlImagenNena));
         //Se inicializa con velocidad 3
-        perNena.setVelocidad(3);
+        perNena.setVelocidad(5);
 
         // se posiciona a Nena en el centro de la pantalla y en la parte inferior
         perNena.setX((getWidth() / 2) - (perNena.getAncho() / 2));
@@ -127,7 +127,7 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
             perCaminador.setVelocidad((int) (Math.random() * (5 - 3) + 3));
             lnkCaminadores.add(perCaminador);
         }
-
+        
         lnkCorredores = new LinkedList();
 
         //se crean de 8 a 10 caminadores y se guardan en la lista de caminadores
@@ -145,7 +145,7 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
                     - ((int) (Math.random() * getWidth())));
             lnkCorredores.add(perCorredor);
         }
-
+        
         //creo el sonido del bate golpeando la pelota
         scSonidoColisionCorredor = new SoundClip("bate.wav");
         //creo el sonido  de la charola golpeada la primera vez
@@ -434,7 +434,7 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
         BufferedReader fileIn;
         boolean bNoFileFound;
         try {
-            fileIn = new BufferedReader(new FileReader("datos.txt"));
+            fileIn = new BufferedReader(new FileReader("lvl1.txt"));
             bNoFileFound = false;
         } catch (FileNotFoundException e) {
             //Este pedazo de código es si quisieramos escribir un archivo en
@@ -449,7 +449,7 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
             init();
         }
         if (!bNoFileFound) {
-            fileIn = new BufferedReader(new FileReader("datos.txt"));
+            fileIn = new BufferedReader(new FileReader("lvl1.txt"));
             String dato = fileIn.readLine();
             while (dato != null) {
                 int iCorredores = Integer.parseInt(dato);
