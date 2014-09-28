@@ -60,6 +60,8 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
     private URL urlImagenPausa = this.getClass().getResource("pause.png");
     //Imagen al pausar el juego.
     Image imaImagenPausa = Toolkit.getDefaultToolkit().getImage(urlImagenPausa);
+    private int iMovX;
+    private int iMovY;
 
     //Constructor de AppletExamen
     public AppletExamen() {
@@ -89,6 +91,12 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
 
         //inicializamos las colisiones de los corredores con nena
         iColisionesNena = 0;
+        
+        //inicializamos el movimiento en X en -1
+        iMovX = 4;
+        
+        //inicializamos el movimiento en Y en -1
+        iMovY = 4;
 
         // se crea imagen de Nena
         URL urlImagenNena = this.getClass().getResource("nena.png");
@@ -232,13 +240,13 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
         //Actualiza el movimiento de los caminadores
         for (Object lnkCaminadore : lnkCaminadores) {
             Personaje perCaminador = (Personaje) lnkCaminadore;
-            perCaminador.derecha();
+            perCaminador.abajo();
         }
         //Actualiza el movimiento de los corredores
         for (Object lnkCorredore : lnkCorredores) {
             Personaje perCorredor = (Personaje) lnkCorredore;
-            perCorredor.setVelocidad(6 - iVidas);
-            perCorredor.abajo();
+            perCorredor.setX(perCorredor.getX() + iMovX);
+            perCorredor.setY(perCorredor.getY() + iMovY);
         }
         if (iColisionesNena >= 5) {
             iColisionesNena = 0;
@@ -290,18 +298,17 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
         //Checa colisiones de los corredores
         for (Object lnkCorredore : lnkCorredores) {
             Personaje perCorredor = (Personaje) lnkCorredore;
-            if (perCorredor.getY() + perCorredor.getAlto() >= getWidth()) {
-                perCorredor.setX((int) (Math.random() * (getHeight() 
-                        - perCorredor.getAncho())));
-                perCorredor.setY(0 - perCorredor.getAlto());
-                perCorredor.setVelocidad(6 - iVidas);
+            if (perCorredor.getX() + perCorredor.getAncho() >= getWidth() || perCorredor.getX() <= 0) {
+                iMovX = -iMovX;
+                scSonidoColisionCorredor.play();
             }
             if (perCorredor.colisiona(perNena)) {
-                perCorredor.setX((int) (Math.random() * (getHeight() 
-                        - perCorredor.getAncho())));
-                perCorredor.setY(0 - perCorredor.getAlto());
-                perCorredor.setVelocidad(6 - iVidas);
+                iMovY = -iMovY;
                 iColisionesNena = iColisionesNena + 1;
+                scSonidoColisionCorredor.play();
+            }
+            if (perCorredor.getY() <= 0) {
+                iMovY = -iMovY;
                 scSonidoColisionCorredor.play();
             }
         }
