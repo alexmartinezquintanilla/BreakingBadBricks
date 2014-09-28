@@ -224,6 +224,10 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
             case 4:
                 perNena.izquierda();
                 break;
+            case 5:
+                perNena.setX(perNena.getX());
+                break;
+
         }
         //Actualiza el movimiento de los caminadores
         for (Object lnkCaminadore : lnkCaminadores) {
@@ -492,11 +496,11 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
     @Override
     public void keyPressed(KeyEvent keyEvent) {
         //To change body of generated methods, choose Tools | Templates.
-        // si presiono flecha para abajo
+        // si presiono flecha para Derecha
         if (keyEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
             iDireccionNena = 3;  // cambio la dirección hacia derecha
         }
-        // si presiono flecha para arriba
+        // si presiono flecha para Izquierda
         if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT) {
             iDireccionNena = 4;   // cambio la dirección hacia izq
         }
@@ -512,6 +516,13 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
 //        if (keyEvent.getKeyCode() == KeyEvent.VK_W) {
 //            iDireccionNena = 2;   // cambio la dirección hacia arriba
 //        }
+        if (keyEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
+            iDireccionNena = 5;  // cambio la dirección hacia derecha
+        }
+        // si presiono flecha para Izquierda
+        if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT) {
+            iDireccionNena = 5;   // cambio la dirección hacia izq
+        }
         //Si presionan P booleano Pausa cambia de estado.
         if (keyEvent.getKeyCode() == KeyEvent.VK_P) {
 
