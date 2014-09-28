@@ -304,11 +304,30 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
             }
             if (perCorredor.colisiona(perNena)) {
                 iMovY = -iMovY;
-                iColisionesNena = iColisionesNena + 1;
+                if (perCorredor.getX() > (perNena.getX() + (perNena.getAncho() - perNena.getAncho() / 4)) && iMovX < 0) {
+                    iMovX = -iMovX;
+                }
+                if (perCorredor.getX() < (perNena.getX() + perNena.getAncho() / 4) && iMovX > 0) {
+                    iMovX = -iMovX;
+                }
                 scSonidoColisionCorredor.play();
+                
             }
             if (perCorredor.getY() <= 0) {
                 iMovY = -iMovY;
+                scSonidoColisionCorredor.play();
+            }
+            for (Object lnkCaminadore : lnkCaminadores) {
+            Personaje perCaminador = (Personaje) lnkCaminadore;
+            if (perCorredor.colisiona(perCaminador)) {
+                iMovY = -iMovY;
+                scSonidoColisionCorredor.play();
+            }
+            }
+            if (perCorredor.getY() + perCorredor.getAlto() >= getHeight()) {
+                iVidas += -1;
+                perCorredor.setX(perNena.getX() + perNena.getAncho() / 2);
+                perCorredor.setY(perNena.getY() - 30);
                 scSonidoColisionCorredor.play();
             }
         }
