@@ -86,6 +86,7 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
     Image imaImagenPausa = Toolkit.getDefaultToolkit().getImage(urlImagenPausa);
     private int iMovX;
     private int iMovY;
+    private boolean bGameStarted;
 
     //Constructor de BreakingBricks
     public BreakingBricks() {
@@ -116,11 +117,14 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
         //inicializamos las colisiones de los corredores con nena
         iColisionesBate = 0;
         
-        //inicializamos el movimiento en X en -1
+        //inicializamos el movimiento de la pelota en X en -1
         iMovX = 4;
         
-        //inicializamos el movimiento en Y en -1
+        //inicializamos el movimiento de la pelota en Y en -1
         iMovY = 4;
+        
+        //inicializamos la variable que checa si ya empezó el juego en falso.
+        bGameStarted = false;
 
         // se crea imagen de Nena
         URL urlImagenNena = this.getClass().getResource("nena.png");
@@ -221,7 +225,7 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
              se checa si hubo colisiones para desaparecer jugadores o corregir
              movimientos y se vuelve a pintar todo
              */
-            if (!bPausado) {
+            if (!bPausado && bGameStarted) {
                 actualiza();
                 checaColision();
                 repaint();
@@ -484,6 +488,12 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
                             - imaImagenPausa.getHeight(this) / 2), this);
                     
         }
+        if (!bGameStarted) {
+            g.drawImage(imaImagenPausa, (((getWidth() / 2)) 
+                    - imaImagenPausa.getWidth(this) / 2), (((getHeight() / 2)) 
+                            - imaImagenPausa.getHeight(this) / 2), this);
+                    
+        }
     }
 
     public void grabaArchivo() throws IOException {
@@ -616,6 +626,8 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
         }
 
         if (keyEvent.getKeyCode() == KeyEvent.VK_C) {
+            
+            bGameStarted = true;
 
             try {
                 leeArchivo(); //Carga datos
