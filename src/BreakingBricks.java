@@ -64,6 +64,8 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
     private SoundClip scSonidoColisionCharolaGolpeada; 
     //Objeto SoundClip para cuando la charola es destruida 
     private SoundClip scSonidoColisionCharolaRota; 
+    //Objeto SoundClip para la música de fondo
+    private SoundClip scSonidoBGM; 
     //Boleano para pausar el juego.
     private boolean bPausado;    
     //URL para cargar imagen de la charola
@@ -182,6 +184,9 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
         scSonidoColisionCharolaGolpeada = new SoundClip("Charola/charolagolpeada.wav");
         //creo el sonido de la charola rompiéndose
         scSonidoColisionCharolaRota = new SoundClip("Charola/charolarota.wav");
+        scSonidoBGM = new SoundClip("BGM.wav");
+        scSonidoBGM.setLooping(true);
+        scSonidoBGM.play();
         addKeyListener(this);
     }
 
