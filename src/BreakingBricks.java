@@ -7,8 +7,8 @@
  * A00810480
  * @version 1.01 2014/09/17
  */
-import java.awt.Color;
-import java.awt.Font;
+//import java.awt.Color;
+//import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Color;
@@ -17,22 +17,22 @@ import java.awt.event.KeyListener;
 import java.awt.Toolkit;
 import java.awt.Font;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+//import javax.swing.JOptionPane;
 import java.net.URL;
-import java.util.HashSet;
+//import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
-import java.awt.*;
+//import java.util.Set;
+//import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.File;
+//import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
+//import javax.swing.ImageIcon;
 
 public class BreakingBricks extends JFrame implements Runnable, KeyListener {
 
@@ -101,7 +101,7 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
      * usarse en el <code>Applet</code> y se definen funcionalidades.
      */
     public void init() {
-        // hago el applet de un tamaño 800,600
+        // hago el applet de un tamaño 800,700
         setSize(800, 700);
 
         // introducir instrucciones para iniciar juego
@@ -129,7 +129,7 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
         perBate = new Personaje(getWidth() / 2, getHeight() / 2,
                 Toolkit.getDefaultToolkit().getImage(urlImagenNena));
         //Se inicializa con velocidad 3
-        perBate.setVelocidad(5);
+        perBate.setVelocidad(7);
 
         // se posiciona a Nena en el centro de la pantalla y en la parte inferior
         perBate.setX((getWidth() / 2) - (perBate.getAncho() / 2));
@@ -267,7 +267,10 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
         //Actualiza el movimiento de los caminadores
         for (Object lnkCaminadore : lnkCharolas) {
             Personaje perCaminador = (Personaje) lnkCaminadore;
+            if (perCaminador.getGolpes() > 1) {
+            perCaminador.setVelocidad(perCaminador.getVelocidad() + 1);                
             perCaminador.abajo();
+            }
         }
         //Actualiza el movimiento de los corredores
         for (Object lnkCorredore : lnkPelotas) {
@@ -307,11 +310,10 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
         //Checa colisiones de los caminadores
         for (Object lnkCaminadore : lnkCharolas) {
             Personaje perCaminador = (Personaje) lnkCaminadore;
-            if (perCaminador.getX() + perCaminador.getAncho() >= getWidth()) {
-                perCaminador.setX(0 - perCaminador.getAncho());
-                perCaminador.setY((int) (Math.random() * (getHeight() 
-                        - perCaminador.getAlto())));
-                perCaminador.setVelocidad((int) (Math.random() * (5 - 3) + 3));
+            if (perCaminador.getY() >= getHeight()) {
+                perCaminador.setX(0 - perCaminador.getAncho() * 2);
+                perCaminador.setY(0);
+                perCaminador.setVelocidad(0);
             }
 //            if (perCaminador.colisiona(perBate)) {
 //                perCaminador.setX(0 - perCaminador.getAncho());
@@ -330,16 +332,22 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
                 scSonidoColisionPelota.play();
             }
             if (perPelota.colisiona(perBate)) {
+                iMovY = -iMovY;
+                perPelota.setY(perBate.getY() - perPelota.getAlto());
                 if (perPelota.getY() > perBate.getY()) {
                     iMovX = -iMovX;
                 }
                 else {
-                iMovY = -iMovY;
-                if (perPelota.getX() > (perBate.getX() + (perBate.getAncho() - perBate.getAncho() / 4)) && iMovX < 0) {
+                if (( perPelota.getX() > (perBate.getX() + (perBate.getAncho() - perBate.getAncho() / 4)) && iMovX < 0) || ( perPelota.getX() + perPelota.getAncho() > (perBate.getX() + (perBate.getAncho() - perBate.getAncho() / 4)))) {
                     iMovX = -iMovX;
+                    iMovX = 1;
                 }
-                if (perPelota.getX() < (perBate.getX() + perBate.getAncho() / 4) && iMovX > 0) {
+                else if ((perPelota.getX() < (perBate.getX() + perBate.getAncho() / 4) && iMovX > 0) || (perPelota.getX() + perPelota.getAncho() < (perBate.getX() + perBate.getAncho() / 4) && iMovX > 0)) {
                     iMovX = -iMovX;
+                    iMovX = 1;
+                }
+                else {
+                    iMovX += 4;
                 }
                 }
                 scSonidoColisionPelota.play();
@@ -355,7 +363,6 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
                     if (urlImagenCharolaRota != null && (perCaminador.getGolpes() > 1)) {
                     perCaminador.setDead(true);
                     perCaminador.setImagen(Toolkit.getDefaultToolkit().getImage(urlImagenCharolaRota));
-                    perCaminador.setVelocidad(7);
                     scSonidoColisionCharolaRota.play();
                     }
                     else {
