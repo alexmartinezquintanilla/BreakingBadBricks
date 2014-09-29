@@ -358,17 +358,18 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
                         perCaminador.setGolpes(perCaminador.getGolpes() + 1);
                         scSonidoColisionCharolaGolpeada.play();
                     }
-                    if ((perPelota.getY() > perCaminador.getY() && iMovY < 0) 
-                            || ((perPelota.getY() + perPelota.getAlto()) 
-                            > (perCaminador.getY() + perCaminador.getAlto()) 
-                            && iMovY > 0)) {
-                        iMovX = -iMovX;
-                        scSonidoColisionCharolaGolpeada.play();
-                    }
-                    else {
+//                    if ( iMovY > 0 ) {
+//                        perPelota.setY(perCaminador.getY() - perPelota.getAlto());
+//                        iMovY = -iMovY;
+//                        scSonidoColisionCharolaGolpeada.play();
+//                    }
+//                    if ( iMovY < 0 ) {
+//                    perPelota.setY(perCaminador.getY() +  perCaminador.getAlto());
+//                    iMovY = -iMovY;
+//                    scSonidoColisionCharolaGolpeada.play();
+//                    }
                     iMovY = -iMovY;
                     scSonidoColisionCharolaGolpeada.play();
-                    }
                 }
             }
             if (perPelota.getY() + perPelota.getAlto() >= getHeight()) {
