@@ -17,6 +17,8 @@ public class Personaje {
     private int iX;     //posicion en x.       
     private int iY;     //posicion en y.
     private int iVelocidad;   // velocidad
+    private int iGolpes;
+    private boolean bDead;
     private ImageIcon imiIcono;	//icono.
 
     /**
@@ -35,6 +37,8 @@ public class Personaje {
         this.iY = iY;
         imiIcono = new ImageIcon(imaImagen);
         this.iVelocidad = 1;   // default 1 en velocidad
+        this.iGolpes = 0; // default 0 en golpes
+        this.bDead = false; //default vivo
     }
 
     /**
@@ -53,6 +57,8 @@ public class Personaje {
         this.iY = iY;
         imiIcono = icoImagen;
         this.iVelocidad = 1;    // default 1 en velocidad
+        this.iGolpes = 0; // default 0 en golpes
+        this.bDead = false; // default vivo
     }
     
     /**
@@ -174,6 +180,54 @@ public class Personaje {
      */
     public int getVelocidad() {
         return iVelocidad;
+    }
+    
+    /**
+     * setGolpes
+     * 
+     * Metodo modificador usado para cambiar la cuenta de golpes recibidos del objeto 
+     * 
+     * @param iGolpes es un <code>entero</code> con la cuenta de golpes recibidos del objeto.
+     * 
+     */
+    public void setGolpes(int iGolpes) {
+            this.iGolpes = iGolpes;
+    }
+
+    /**
+     * getGolpes
+     * 
+     * Metodo de acceso que regresa la cuenta de golpes recibidos del objeto 
+     * 
+     * @return iGolpes un <code>entero</code> con la cuenta de golpes recibidos del objeto.
+     * 
+     */
+    public int getGolpes() {
+        return iGolpes;
+    }
+    
+    /**
+     * setDead
+     * 
+     * Metodo modificador usado para cambiar el estado colisionable del objeto 
+     * 
+     * @param bDead es un <code>booleano</code> con el estado colisionable del objeto.
+     * 
+     */
+    public void setDead(boolean bDead) {
+            this.bDead = bDead;
+    }
+
+    /**
+     * getDead
+     * 
+     * Metodo de acceso que regresa el estado colisionable del objeto 
+     * 
+     * @return bDead un <code>booleano</code> con el estado colisionable del objeto.
+     * 
+     */
+    public boolean getDead() {
+        return bDead;
     }
 
     /**

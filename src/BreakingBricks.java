@@ -32,6 +32,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 
 public class BreakingBricks extends JFrame implements Runnable, KeyListener {
 
@@ -68,6 +69,12 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
     //URL para cargar imagen de la charola
     private URL urlImagenCharola = 
             this.getClass().getResource("Charola/charola.png");
+    //URL para cargar imagen de la charola golpeada
+    private URL urlImagenCharolaGolpeada = 
+            this.getClass().getResource("Charola/charolagolpeada.png");
+    //URL para cargar imagen de la charola rota
+    private URL urlImagenCharolaRota = 
+            this.getClass().getResource("Charola/charolarota.gif");
     //URL para cargar la imagen de la pelota
     private URL urlImagenPelota = 
             this.getClass().getResource("pelota.gif");
@@ -301,14 +308,14 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
                         - perCaminador.getAlto())));
                 perCaminador.setVelocidad((int) (Math.random() * (5 - 3) + 3));
             }
-            if (perCaminador.colisiona(perBate)) {
-                perCaminador.setX(0 - perCaminador.getAncho());
-                perCaminador.setY((int) (Math.random() * (getHeight() 
-                        - perCaminador.getAlto())));
-                perCaminador.setVelocidad((int) (Math.random() * (5 - 3) + 3));
-                iScore = iScore + 1;
-                scSonidoColisionCharolaGolpeada.play();
-            }
+//            if (perCaminador.colisiona(perBate)) {
+//                perCaminador.setX(0 - perCaminador.getAncho());
+//                perCaminador.setY((int) (Math.random() * (getHeight() 
+//                        - perCaminador.getAlto())));
+//                perCaminador.setVelocidad((int) (Math.random() * (5 - 3) + 3));
+//                iScore = iScore + 1;
+//                scSonidoColisionCharolaGolpeada.play();
+//            }
         }
         //Checa colisiones de los corredores
         for (Object lnkCorredore : lnkPelotas) {
@@ -339,18 +346,30 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
             }
             for (Object lnkCaminadore : lnkCharolas) {
             Personaje perCaminador = (Personaje) lnkCaminadore;
-            if (perPelota.colisiona(perCaminador)) {
-                if ((perPelota.getY() > perCaminador.getY() && iMovY < 0) 
-                        || ((perPelota.getY() + perPelota.getAlto()) 
-                        > (perCaminador.getY() + perCaminador.getAlto()) 
-                        && iMovY > 0)) {
-                    iMovX = -iMovX;
+                if (perPelota.colisiona(perCaminador) && !perCaminador.getDead()) {
+                    if (urlImagenCharolaRota != null && (perCaminador.getGolpes() > 1)) {
+                    perCaminador.setDead(true);
+                    perCaminador.setImagen(Toolkit.getDefaultToolkit().getImage(urlImagenCharolaRota));
+                    perCaminador.setVelocidad(7);
+                    scSonidoColisionCharolaRota.play();
+                    }
+                    else {
+                        perCaminador.setImagen(Toolkit.getDefaultToolkit().getImage(urlImagenCharolaGolpeada));
+                        perCaminador.setGolpes(perCaminador.getGolpes() + 1);
+                        scSonidoColisionCharolaGolpeada.play();
+                    }
+                    if ((perPelota.getY() > perCaminador.getY() && iMovY < 0) 
+                            || ((perPelota.getY() + perPelota.getAlto()) 
+                            > (perCaminador.getY() + perCaminador.getAlto()) 
+                            && iMovY > 0)) {
+                        iMovX = -iMovX;
+                        scSonidoColisionCharolaGolpeada.play();
+                    }
+                    else {
+                    iMovY = -iMovY;
+                    scSonidoColisionCharolaGolpeada.play();
+                    }
                 }
-                else {
-                iMovY = -iMovY;
-                }
-                scSonidoColisionCharolaRota.play();
-            }
             }
             if (perPelota.getY() + perPelota.getAlto() >= getHeight()) {
                 iVidas += -1;
