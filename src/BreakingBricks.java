@@ -84,6 +84,9 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
     private URL urlImagenPausa = this.getClass().getResource("pause.png");
     //Imagen al pausar el juego.
     Image imaImagenPausa = Toolkit.getDefaultToolkit().getImage(urlImagenPausa);
+    private URL urlImagenInicio = this.getClass().getResource("pantallaInicio.png");
+    //Imagen al pausar el juego.
+    Image imaImagenInicio = Toolkit.getDefaultToolkit().getImage(urlImagenInicio);
     private int iMovX;
     private int iMovY;
     private boolean bGameStarted;
@@ -489,9 +492,9 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
                     
         }
         if (!bGameStarted) {
-            g.drawImage(imaImagenPausa, (((getWidth() / 2)) 
-                    - imaImagenPausa.getWidth(this) / 2), (((getHeight() / 2)) 
-                            - imaImagenPausa.getHeight(this) / 2), this);
+            g.drawImage(imaImagenInicio, (((getWidth() / 2)) 
+                    - imaImagenInicio.getWidth(this) / 2), (((getHeight() / 2)) 
+                            - imaImagenInicio.getHeight(this) / 2), this);
                     
         }
     }
