@@ -14,7 +14,7 @@ import javax.swing.JFrame;
  */
 public class Main {
     public static void main(String[] args) {
-        AppletExamen axJuego = new AppletExamen();
+        BreakingBricks axJuego = new BreakingBricks();
         axJuego.setVisible(true);
         axJuego.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

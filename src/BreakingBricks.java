@@ -1,5 +1,5 @@
 /**
- * AppletExamen
+ * BreakingBricks
  *
  * Personaje para juego creado en Examen
  *
@@ -33,38 +33,53 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AppletExamen extends JFrame implements Runnable, KeyListener {
+public class BreakingBricks extends JFrame implements Runnable, KeyListener {
 
     /* objetos para manejar el buffer del Applet y este no parpadee */
-    private Image imaImagenApplet;   // Imagen a proyectar en Applet	
-    private Graphics graGraficaApplet;  // Objeto grafico de la Imagen
+    // Imagen a proyectar en el JFrame
+    private Image imaImagenJFrame;   	
+    // Objeto grafico de la Imagen
+    private Graphics graGraficaJFrame;  
+    //Imagen de fondo
     private URL urlImagenBackG = this.getClass().getResource("fondo.png");
+    //Contador de vidas
     private int iVidas;
-    private Personaje perNena;
-    private int iDireccionNena;
-    private LinkedList lnkCaminadores;
-    private LinkedList lnkCorredores;
+    //Objeto de la clase personaje. El Bate (slider de brick breaker)
+    private Personaje perBate;
+    //Dirección en la que se mueve el bate.
+    private int iDireccionBate;
+    //Linked List para las charolas
+    private LinkedList lnkCharolas;
+    //Linked list para la pelota (temporal?)
+    private LinkedList lnkPelotas;
+    //Contador de puntos
     private int iScore;
-    private int iColisionesNena;
-    // Objeto SoundClip sonido Corredor
-    private SoundClip scSonidoColisionCorredor;  
-    //Objeto SoundClip sonido Caminador
-    private SoundClip scSonidoColisionCaminador; 
-    //Objeto SoundClip charola rota
+    //Contador para las veces que el bate ha sido colisionado (a cambiar
+    //por número de veces que la charola ha sido colisionada?
+    private int iColisionesBate;
+    // Objeto SoundClip cuando la pelota colisiona con el bate o la pared
+    private SoundClip scSonidoColisionPelota;  
+    //Objeto SoundClip para cuando la charola es golpeada la primera vez
+    private SoundClip scSonidoColisionCharolaGolpeada; 
+    //Objeto SoundClip para cuando la charola es destruida 
     private SoundClip scSonidoColisionCharolaRota; 
-    private boolean bPausado;    //Boleano para pausar el juego.
-    private URL urlImagenCaminador = 
+    //Boleano para pausar el juego.
+    private boolean bPausado;    
+    //URL para cargar imagen de la charola
+    private URL urlImagenCharola = 
             this.getClass().getResource("Charola/charola.png");
-    private URL urlImagenCorredor = 
+    //URL para cargar la imagen de la pelota
+    private URL urlImagenPelota = 
             this.getClass().getResource("pelota.gif");
+    //URL para cargar la imagen de pausa
     private URL urlImagenPausa = this.getClass().getResource("pause.png");
     //Imagen al pausar el juego.
     Image imaImagenPausa = Toolkit.getDefaultToolkit().getImage(urlImagenPausa);
     private int iMovX;
     private int iMovY;
 
-    //Constructor de AppletExamen
-    public AppletExamen() {
+    //Constructor de BreakingBricks
+    public BreakingBricks() {
         init();
         start();
     }
@@ -90,7 +105,7 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
         iScore = 0;
 
         //inicializamos las colisiones de los corredores con nena
-        iColisionesNena = 0;
+        iColisionesBate = 0;
         
         //inicializamos el movimiento en X en -1
         iMovX = 4;
@@ -102,22 +117,22 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
         URL urlImagenNena = this.getClass().getResource("nena.png");
 
         // se crea a Nena 
-        perNena = new Personaje(getWidth() / 2, getHeight() / 2,
+        perBate = new Personaje(getWidth() / 2, getHeight() / 2,
                 Toolkit.getDefaultToolkit().getImage(urlImagenNena));
         //Se inicializa con velocidad 3
-        perNena.setVelocidad(5);
+        perBate.setVelocidad(5);
 
         // se posiciona a Nena en el centro de la pantalla y en la parte inferior
-        perNena.setX((getWidth() / 2) - (perNena.getAncho() / 2));
-//        perNena.setY((getHeight() / 2) - (perNena.getAlto() / 2));
-        perNena.setY(getHeight() - perNena.getAlto());
+        perBate.setX((getWidth() / 2) - (perBate.getAncho() / 2));
+//        perBate.setY((getHeight() / 2) - (perBate.getAlto() / 2));
+        perBate.setY(getHeight() - perBate.getAlto());
 
         // se posiciona a Susy en alguna parte al azar del cuadrante 
         // superior izquierdo
         int posX;
         int posY;
 
-        lnkCaminadores = new LinkedList();
+        lnkCharolas = new LinkedList();
 
         //en este for se crean de 8 a 10 caminadores y se guardan en la lista de
         //caminadores
@@ -128,15 +143,15 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
             // se crea el personaje caminador
             Personaje perCaminador;
             perCaminador = new Personaje(posX, posY,
-                    Toolkit.getDefaultToolkit().getImage(urlImagenCaminador));
+                    Toolkit.getDefaultToolkit().getImage(urlImagenCharola));
             perCaminador.setX(0 - perCaminador.getAncho());
             perCaminador.setY((int) (Math.random() * (getHeight() 
                     - perCaminador.getAlto())));
             perCaminador.setVelocidad((int) (Math.random() * (5 - 3) + 3));
-            lnkCaminadores.add(perCaminador);
+            lnkCharolas.add(perCaminador);
         }
         
-        lnkCorredores = new LinkedList();
+        lnkPelotas = new LinkedList();
 
         //se crean de 8 a 10 caminadores y se guardan en la lista de caminadores
         iAzar = (int) (Math.random() * (16 - 10) + 10);
@@ -144,20 +159,20 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
             posX = (int) (Math.random() * getHeight());
             posY = 0;
             // se crea el personaje caminador
-            Personaje perCorredor;
-            perCorredor = new Personaje(posX, posY,
-                    Toolkit.getDefaultToolkit().getImage(urlImagenCorredor));
-            perCorredor.setX((int) (Math.random() * (getWidth() 
-                    - perCorredor.getAncho())));
-            perCorredor.setY(-perCorredor.getAlto() 
+            Personaje perPelota;
+            perPelota = new Personaje(posX, posY,
+                    Toolkit.getDefaultToolkit().getImage(urlImagenPelota));
+            perPelota.setX((int) (Math.random() * (getWidth() 
+                    - perPelota.getAncho())));
+            perPelota.setY(-perPelota.getAlto() 
                     - ((int) (Math.random() * getWidth())));
-            lnkCorredores.add(perCorredor);
+            lnkPelotas.add(perPelota);
         }
         
         //creo el sonido del bate golpeando la pelota
-        scSonidoColisionCorredor = new SoundClip("bate.wav");
+        scSonidoColisionPelota = new SoundClip("bate.wav");
         //creo el sonido  de la charola golpeada la primera vez
-        scSonidoColisionCaminador = new SoundClip("Charola/charolagolpeada.wav");
+        scSonidoColisionCharolaGolpeada = new SoundClip("Charola/charolagolpeada.wav");
         //creo el sonido de la charola rompiéndose
         scSonidoColisionCharolaRota = new SoundClip("Charola/charolarota.wav");
         addKeyListener(this);
@@ -219,37 +234,37 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
         // instrucciones para actualizar personajes
 
         //Nena actualiza movimiento dependiendo de la tecla que se presionó
-        switch (iDireccionNena) {
+        switch (iDireccionBate) {
 //            case 1:
-//                perNena.abajo();
+//                perBate.abajo();
 //                break;
 //            case 2:
-//                perNena.arriba();
+//                perBate.arriba();
 //                break;
             case 3:
-                perNena.derecha();
+                perBate.derecha();
                 break;
             case 4:
-                perNena.izquierda();
+                perBate.izquierda();
                 break;
             case 5:
-                perNena.setX(perNena.getX());
+                perBate.setX(perBate.getX());
                 break;
 
         }
         //Actualiza el movimiento de los caminadores
-        for (Object lnkCaminadore : lnkCaminadores) {
+        for (Object lnkCaminadore : lnkCharolas) {
             Personaje perCaminador = (Personaje) lnkCaminadore;
             perCaminador.abajo();
         }
         //Actualiza el movimiento de los corredores
-        for (Object lnkCorredore : lnkCorredores) {
-            Personaje perCorredor = (Personaje) lnkCorredore;
-            perCorredor.setX(perCorredor.getX() + iMovX);
-            perCorredor.setY(perCorredor.getY() + iMovY);
+        for (Object lnkCorredore : lnkPelotas) {
+            Personaje perPelota = (Personaje) lnkCorredore;
+            perPelota.setX(perPelota.getX() + iMovX);
+            perPelota.setY(perPelota.getY() + iMovY);
         }
-        if (iColisionesNena >= 5) {
-            iColisionesNena = 0;
+        if (iColisionesBate >= 5) {
+            iColisionesBate = 0;
             iVidas = iVidas - 1;
         }
     }
@@ -265,20 +280,20 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
         // instrucciones para checar colision y reacomodar personajes si 
         // es necesario
         //Checa colisiones de Nena
-//        if (perNena.getY() + perNena.getAlto() > getHeight()) {
-//            perNena.setY(getHeight() - perNena.getAlto());
+//        if (perBate.getY() + perBate.getAlto() > getHeight()) {
+//            perBate.setY(getHeight() - perBate.getAlto());
 //        }
-//        if (perNena.getY() <= 0) {
-//            perNena.setY(0);
+//        if (perBate.getY() <= 0) {
+//            perBate.setY(0);
 //        }
-        if ((perNena.getX() + perNena.getAncho()) >= getWidth()) {
-            perNena.setX(getWidth() - perNena.getAncho());
+        if ((perBate.getX() + perBate.getAncho()) >= getWidth()) {
+            perBate.setX(getWidth() - perBate.getAncho());
         }
-        if (perNena.getX() <= 0) {
-            perNena.setX(0);
+        if (perBate.getX() <= 0) {
+            perBate.setX(0);
         }
         //Checa colisiones de los caminadores
-        for (Object lnkCaminadore : lnkCaminadores) {
+        for (Object lnkCaminadore : lnkCharolas) {
             Personaje perCaminador = (Personaje) lnkCaminadore;
             if (perCaminador.getX() + perCaminador.getAncho() >= getWidth()) {
                 perCaminador.setX(0 - perCaminador.getAncho());
@@ -286,47 +301,47 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
                         - perCaminador.getAlto())));
                 perCaminador.setVelocidad((int) (Math.random() * (5 - 3) + 3));
             }
-            if (perCaminador.colisiona(perNena)) {
+            if (perCaminador.colisiona(perBate)) {
                 perCaminador.setX(0 - perCaminador.getAncho());
                 perCaminador.setY((int) (Math.random() * (getHeight() 
                         - perCaminador.getAlto())));
                 perCaminador.setVelocidad((int) (Math.random() * (5 - 3) + 3));
                 iScore = iScore + 1;
-                scSonidoColisionCaminador.play();
+                scSonidoColisionCharolaGolpeada.play();
             }
         }
         //Checa colisiones de los corredores
-        for (Object lnkCorredore : lnkCorredores) {
-            Personaje perCorredor = (Personaje) lnkCorredore;
-            if (perCorredor.getX() + perCorredor.getAncho() >= getWidth() || perCorredor.getX() <= 0) {
+        for (Object lnkCorredore : lnkPelotas) {
+            Personaje perPelota = (Personaje) lnkCorredore;
+            if (perPelota.getX() + perPelota.getAncho() >= getWidth() || perPelota.getX() <= 0) {
                 iMovX = -iMovX;
-                scSonidoColisionCorredor.play();
+                scSonidoColisionPelota.play();
             }
-            if (perCorredor.colisiona(perNena)) {
-                if (perCorredor.getY() > perNena.getY()) {
+            if (perPelota.colisiona(perBate)) {
+                if (perPelota.getY() > perBate.getY()) {
                     iMovX = -iMovX;
                 }
                 else {
                 iMovY = -iMovY;
-                if (perCorredor.getX() > (perNena.getX() + (perNena.getAncho() - perNena.getAncho() / 4)) && iMovX < 0) {
+                if (perPelota.getX() > (perBate.getX() + (perBate.getAncho() - perBate.getAncho() / 4)) && iMovX < 0) {
                     iMovX = -iMovX;
                 }
-                if (perCorredor.getX() < (perNena.getX() + perNena.getAncho() / 4) && iMovX > 0) {
+                if (perPelota.getX() < (perBate.getX() + perBate.getAncho() / 4) && iMovX > 0) {
                     iMovX = -iMovX;
                 }
                 }
-                scSonidoColisionCorredor.play();
+                scSonidoColisionPelota.play();
                 
             }
-            if (perCorredor.getY() <= 0) {
+            if (perPelota.getY() <= 0) {
                 iMovY = -iMovY;
-                scSonidoColisionCorredor.play();
+                scSonidoColisionPelota.play();
             }
-            for (Object lnkCaminadore : lnkCaminadores) {
+            for (Object lnkCaminadore : lnkCharolas) {
             Personaje perCaminador = (Personaje) lnkCaminadore;
-            if (perCorredor.colisiona(perCaminador)) {
-                if ((perCorredor.getY() > perCaminador.getY() && iMovY < 0) 
-                        || ((perCorredor.getY() + perCorredor.getAlto()) 
+            if (perPelota.colisiona(perCaminador)) {
+                if ((perPelota.getY() > perCaminador.getY() && iMovY < 0) 
+                        || ((perPelota.getY() + perPelota.getAlto()) 
                         > (perCaminador.getY() + perCaminador.getAlto()) 
                         && iMovY > 0)) {
                     iMovX = -iMovX;
@@ -334,14 +349,14 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
                 else {
                 iMovY = -iMovY;
                 }
-                scSonidoColisionCorredor.play();
+                scSonidoColisionCharolaRota.play();
             }
             }
-            if (perCorredor.getY() + perCorredor.getAlto() >= getHeight()) {
+            if (perPelota.getY() + perPelota.getAlto() >= getHeight()) {
                 iVidas += -1;
-                perCorredor.setX(perNena.getX() + perNena.getAncho() / 2);
-                perCorredor.setY(perNena.getY() - 30);
-                scSonidoColisionCorredor.play();
+                perPelota.setX(perBate.getX() + perBate.getAncho() / 2);
+                perPelota.setY(perBate.getY() - 30);
+                scSonidoColisionPelota.play();
             }
         }
     }
@@ -359,24 +374,24 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
      */
     public void paint(Graphics graGrafico) {
         // Inicializan el DoubleBuffer
-        if (imaImagenApplet == null) {
-            imaImagenApplet = createImage(this.getSize().width,
+        if (imaImagenJFrame == null) {
+            imaImagenJFrame = createImage(this.getSize().width,
                     this.getSize().height);
-            graGraficaApplet = imaImagenApplet.getGraphics();
+            graGraficaJFrame = imaImagenJFrame.getGraphics();
         }
         // creo imagen para el background
         Image imaImagenBackG = 
                 Toolkit.getDefaultToolkit().getImage(urlImagenBackG);
         // Despliego la imagen
-        graGraficaApplet.drawImage(imaImagenBackG, 0, 0,
+        graGraficaJFrame.drawImage(imaImagenBackG, 0, 0,
                 getWidth(), getHeight(), this);
 
         // Actualiza el Foreground.
-        graGraficaApplet.setColor(getForeground());
-        paint1(graGraficaApplet);
+        graGraficaJFrame.setColor(getForeground());
+        paint1(graGraficaJFrame);
 
         // Dibuja la imagen actualizada
-        graGrafico.drawImage(imaImagenApplet, 0, 0, this);
+        graGrafico.drawImage(imaImagenJFrame, 0, 0, this);
     }
 
     /**
@@ -391,24 +406,24 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
      *
      */
     public void paint1(Graphics g) {
-        if (perNena != null & lnkCaminadores != null & lnkCorredores != null) {
+        if (perBate != null & lnkCharolas != null & lnkPelotas != null) {
 
             //Dibuja la imagen de Nena en la posicion actualizada
-            g.drawImage(perNena.getImagen(), perNena.getX(),
-                    perNena.getY(), this);
+            g.drawImage(perBate.getImagen(), perBate.getX(),
+                    perBate.getY(), this);
 
             //Dibuja la imagen de los caminadores en la posicion actualizada
-            for (Object lnkCaminadore : lnkCaminadores) {
+            for (Object lnkCaminadore : lnkCharolas) {
                 Personaje perCaminador = (Personaje) lnkCaminadore;
                 g.drawImage(perCaminador.getImagen(), perCaminador.getX(),
                         perCaminador.getY(), this);
             }
 
             //Dibuja la imagen de los corredores en la posicion actualizada
-            for (Object lnkCorredore : lnkCorredores) {
-                Personaje perCorredor = (Personaje) lnkCorredore;
-                g.drawImage(perCorredor.getImagen(), perCorredor.getX(),
-                        perCorredor.getY(), this);
+            for (Object lnkCorredore : lnkPelotas) {
+                Personaje perPelota = (Personaje) lnkCorredore;
+                g.drawImage(perPelota.getImagen(), perPelota.getX(),
+                        perPelota.getY(), this);
             }
 
             //Despliega las vidas restantes
@@ -442,24 +457,24 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
     public void grabaArchivo() throws IOException {
         PrintWriter fileOut = new PrintWriter(new FileWriter("datos.txt"));
 
-        fileOut.println(lnkCorredores.size());
-        for (Object lnkCorre1 : lnkCorredores) {
+        fileOut.println(lnkPelotas.size());
+        for (Object lnkCorre1 : lnkPelotas) {
             Personaje perCorre = (Personaje) lnkCorre1;
             fileOut.println(perCorre.getX());
             fileOut.println(perCorre.getY());
             fileOut.println(perCorre.getVelocidad());
         }
-        fileOut.println(lnkCaminadores.size());
-        for (Object lnkCamina1 : lnkCaminadores) {
+        fileOut.println(lnkCharolas.size());
+        for (Object lnkCamina1 : lnkCharolas) {
             Personaje perCamina = (Personaje) lnkCamina1;
             fileOut.println(perCamina.getX());
             fileOut.println(perCamina.getY());
             fileOut.println(perCamina.getVelocidad());
         }
 
-        fileOut.println(perNena.getX());
-        fileOut.println(perNena.getY());
-        fileOut.println(iDireccionNena);
+        fileOut.println(perBate.getX());
+        fileOut.println(perBate.getY());
+        fileOut.println(iDireccionBate);
         fileOut.println(iScore);
         fileOut.println(iVidas);
 
@@ -468,8 +483,8 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
     }
 
     public void leeArchivo() throws IOException {
-        lnkCorredores.clear();
-        lnkCaminadores.clear();
+        lnkPelotas.clear();
+        lnkCharolas.clear();
         BufferedReader fileIn;
         boolean bNoFileFound;
         try {
@@ -497,11 +512,11 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
                     Personaje perCorre;
                     perCorre = new Personaje(0, 0,
                             Toolkit.getDefaultToolkit().
-                                    getImage(urlImagenCorredor));
+                                    getImage(urlImagenPelota));
                     perCorre.setX(Integer.parseInt(fileIn.readLine()));
                     perCorre.setY(Integer.parseInt(fileIn.readLine()));
                     perCorre.setVelocidad(Integer.parseInt(fileIn.readLine()));
-                    lnkCorredores.add(perCorre);
+                    lnkPelotas.add(perCorre);
                 }
 
                 int iCaminadores = Integer.parseInt(fileIn.readLine());
@@ -510,16 +525,16 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
                     Personaje perCamina;
                     perCamina = new Personaje(0, 0,
                             Toolkit.getDefaultToolkit().
-                                    getImage(urlImagenCaminador));
+                                    getImage(urlImagenCharola));
                     perCamina.setX(Integer.parseInt(fileIn.readLine()));
                     perCamina.setY(Integer.parseInt(fileIn.readLine()));
                     perCamina.setVelocidad(Integer.parseInt(fileIn.readLine()));
-                    lnkCaminadores.add(perCamina);
+                    lnkCharolas.add(perCamina);
                 }
 
-                perNena.setX(Integer.parseInt(fileIn.readLine()));
-                perNena.setY(Integer.parseInt(fileIn.readLine()));
-                iDireccionNena = (Integer.parseInt(fileIn.readLine()));
+                perBate.setX(Integer.parseInt(fileIn.readLine()));
+                perBate.setY(Integer.parseInt(fileIn.readLine()));
+                iDireccionBate = (Integer.parseInt(fileIn.readLine()));
                 iScore = (Integer.parseInt(fileIn.readLine()));
                 iVidas = (Integer.parseInt(fileIn.readLine()));
             }
@@ -537,11 +552,11 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
         //To change body of generated methods, choose Tools | Templates.
         // si presiono flecha para Derecha
         if (keyEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
-            iDireccionNena = 3;  // cambio la dirección hacia derecha
+            iDireccionBate = 3;  // cambio la dirección hacia derecha
         }
         // si presiono flecha para Izquierda
         if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT) {
-            iDireccionNena = 4;   // cambio la dirección hacia izq
+            iDireccionBate = 4;   // cambio la dirección hacia izq
         }
     }
 
@@ -549,18 +564,18 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
     public void keyReleased(KeyEvent keyEvent) {
 //        // si presiono flecha para abajo
 //        if (keyEvent.getKeyCode() == KeyEvent.VK_S) {
-//            iDireccionNena = 1;  // cambio la dirección hacia abajo
+//            iDireccionBate = 1;  // cambio la dirección hacia abajo
 //        }
 //        // si presiono flecha para arriba
 //        if (keyEvent.getKeyCode() == KeyEvent.VK_W) {
-//            iDireccionNena = 2;   // cambio la dirección hacia arriba
+//            iDireccionBate = 2;   // cambio la dirección hacia arriba
 //        }
         if (keyEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
-            iDireccionNena = 5;  // cambio la dirección hacia derecha
+            iDireccionBate = 5;  // cambio la dirección hacia derecha
         }
         // si presiono flecha para Izquierda
         if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT) {
-            iDireccionNena = 5;   // cambio la dirección hacia izq
+            iDireccionBate = 5;   // cambio la dirección hacia izq
         }
         //Si presionan P booleano Pausa cambia de estado.
         if (keyEvent.getKeyCode() == KeyEvent.VK_P) {
@@ -573,7 +588,7 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
             try {
                 leeArchivo(); //Carga datos
             } catch (IOException ex) {
-                Logger.getLogger(AppletExamen.class.getName()).log(Level.SEVERE,
+                Logger.getLogger(BreakingBricks.class.getName()).log(Level.SEVERE,
                         null, ex);
             }
         }
@@ -583,7 +598,7 @@ public class AppletExamen extends JFrame implements Runnable, KeyListener {
             try {
                 grabaArchivo();
             } catch (IOException ex) {
-                Logger.getLogger(AppletExamen.class.getName()).log(Level.SEVERE,
+                Logger.getLogger(BreakingBricks.class.getName()).log(Level.SEVERE,
                         null, ex);
             }
         }
