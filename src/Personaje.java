@@ -318,6 +318,49 @@ public class Personaje {
         return recObjeto.intersects(recParametro);
     }
     
+    public boolean colisionaDerecha (Personaje aniParametro) {
+        // creo un objeto rectangulo a partir de este objeto Personaje
+        Rectangle recObjeto = new Rectangle(this.getX(),this.getY(),
+                this.getAncho(), this.getAlto());
+        
+        // creo un objeto rectangulo a partir del objeto Personaje parametro
+        Rectangle recParametro = new Rectangle(aniParametro.getX(),
+                aniParametro.getY(), (aniParametro.getAncho() / 3),
+                aniParametro.getAlto());
+        
+        
+        // si se colisionan regreso verdadero, sino regreso falso
+        return recObjeto.intersects(recParametro);
+    }
+    
+    public boolean colisionaIzquierda (Personaje aniParametro) {
+        // creo un objeto rectangulo a partir de este objeto Personaje
+        Rectangle recObjeto = new Rectangle(this.getX(),this.getY(),
+                this.getAncho(), this.getAlto());
+        
+        // creo un objeto rectangulo a partir del objeto Personaje parametro
+        Rectangle recParametro = new Rectangle(aniParametro.getX() + (this.getAncho()/3 *2),
+                aniParametro.getY() + this.getAlto(), (aniParametro.getAncho() /3),
+                aniParametro.getAlto());
+        
+        // si se colisionan regreso verdadero, sino regreso falso
+        return recObjeto.intersects(recParametro);
+    }
+    
+    public boolean colisionaEnMedio (Personaje aniParametro) {
+        // creo un objeto rectangulo a partir de este objeto Personaje
+        Rectangle recObjeto = new Rectangle(this.getX(),this.getY(),
+                this.getAncho(), this.getAlto());
+        
+        // creo un objeto rectangulo a partir del objeto Personaje parametro
+        Rectangle recParametro = new Rectangle(aniParametro.getX() + (this.getAncho()/4),
+                aniParametro.getY(), aniParametro.getAncho() / 3,
+                aniParametro.getAlto());
+        
+        // si se colisionan regreso verdadero, sino regreso falso
+        return recObjeto.intersects(recParametro);
+    }
+    
     /** 
      * colisiona
      * 

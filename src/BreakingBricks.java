@@ -50,6 +50,7 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
     //Dirección en la que se mueve el bate.
     private int iDireccionBate;
     //Linked List para las charolas
+    private int iDireccionMosca;
     private LinkedList lnkCharolas;
     //Linked list para la pelota (temporal?)
     private LinkedList lnkPelotas;
@@ -89,6 +90,8 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
     Image imaImagenInicio = Toolkit.getDefaultToolkit().getImage(urlImagenInicio);
     private int iMovX;
     private int iMovY;
+    private int iMovMoscaX;
+    private int iMovMoscaY;
     private boolean bGameStarted;
 
     //Constructor de BreakingBricks
@@ -194,6 +197,7 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
         scSonidoBGM = new SoundClip("BGM.wav");
         scSonidoBGM.setLooping(true);
         scSonidoBGM.play();
+        iDireccionMosca = 0;
         addKeyListener(this);
     }
 
@@ -252,6 +256,30 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
     public void actualiza() {
         // instrucciones para actualizar personajes
 
+              switch(iDireccionMosca) {
+
+                        case 1: {
+
+                              iMovMoscaY --;
+                              break; //se mueve hacia arriba
+                        }
+                        case 2: {
+
+                              iMovMoscaY ++;
+                              break; //se mueve hacia abajo
+                        }
+                        case 3: {
+
+                              iMovMoscaX --;
+                              break; //se mueve hacia la izquierda
+                        }
+                        case 4: {
+
+                              iMovMoscaX ++;
+                              break; //se mueve hacia la derecha
+                        }
+                }
+        
         //Nena actualiza movimiento dependiendo de la tecla que se presionó
         switch (iDireccionBate) {
 //            case 1:
