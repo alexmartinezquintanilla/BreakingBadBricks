@@ -47,7 +47,9 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
     private int iVidas;
     //Objeto de la clase personaje. El Bate (slider de brick breaker)
     private Personaje perBate;
-    //Dirección en la que se mueve el bate.
+    //vida y score como personajes por si se implementa colision
+    private Personaje perScoreVidas;
+    //Dirección en la que se mueve el bate
     private int iDireccionBate;
     //Linked List para las charolas
     private int iDireccionMosca;
@@ -84,6 +86,8 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
     //URL para cargar la imagen de pausa
     private URL urlImagenPausa = this.getClass().getResource("pause.png");
     //Imagen al pausar el juego.
+    private URL urlImagenScoreVidas = this.getClass().getResource("scorevidas.png");
+    //imagen para el score y las vidas
     Image imaImagenPausa = Toolkit.getDefaultToolkit().getImage(urlImagenPausa);
     private URL urlImagenInicio = this.getClass().getResource("pantallaInicio.png");
     //Imagen al pausar el juego.
@@ -140,8 +144,11 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
                 Toolkit.getDefaultToolkit().getImage(urlImagenNena));
         //Se inicializa con velocidad 3
         perBate.setVelocidad(7);
+        
+        perScoreVidas = new Personaje (40, 550 ,
+                Toolkit.getDefaultToolkit().getImage(urlImagenScoreVidas));
 
-        // se posiciona a Nena en el centro de la pantalla y en la parte inferior
+        // se posiciona al bate en el centro de la pantalla y en la parte inferior
         perBate.setX((getWidth() / 2) - (perBate.getAncho() / 2));
 //        perBate.setY((getHeight() / 2) - (perBate.getAlto() / 2));
         perBate.setY(getHeight() - perBate.getAlto());
@@ -171,7 +178,9 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
         }
         
         lnkPelotas = new LinkedList();
-
+        
+        //imagen de las vidas y el score como personaje
+           
         //se crean de 8 a 10 caminadores y se guardan en la lista de caminadores
         iAzar = (int) (Math.random() * (16 - 10) + 10);
         for (int iK = 1; iK <= iAzar; iK++) {
@@ -492,13 +501,17 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
                 g.drawImage(perPelota.getImagen(), perPelota.getX(),
                         perPelota.getY(), this);
             }
-
-            //Despliega las vidas restantes
-            g.setColor(Color.red);
+            
+            //dibuja la imagen del score y las vidas
+            g.drawImage(perScoreVidas.getImagen(), perScoreVidas.getX(),
+                    perScoreVidas.getY(), this);
+            //Despliega las vidas restantes y el score
+            g.setColor(Color.GREEN);
             Font fFont = new Font("Verdana", Font.BOLD, 18);
             g.setFont(fFont);
-            g.drawString("Quedan " + iVidas + " vidas!", 50, 80);
-            g.drawString("Score : " + iScore, 50, 50);
+            g.drawString( " : " +iScore, 160,595);
+            g.drawString( " : " +iVidas, 200,635);
+            
         }
         if (iVidas <= 0) {
 
@@ -510,8 +523,10 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
             // Despliego la imagen
             g.drawImage(imaImagenGOver, 0, 0,
                     getWidth(), getHeight(), this);
-            g.drawString("Quedan " + iVidas + " vidas!", 50, 80);
-            g.drawString("Score : " + iScore, 50, 50);
+            g.drawImage(perScoreVidas.getImagen(), perScoreVidas.getX(),
+                    perScoreVidas.getY(), this);
+            g.drawString( " : " +iScore, 160,595);
+            g.drawString( " : " +iVidas, 200,635);
         }
         if (bPausado) {
             g.drawImage(imaImagenPausa, (((getWidth() / 2)) 
