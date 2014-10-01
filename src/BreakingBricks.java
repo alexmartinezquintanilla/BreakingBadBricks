@@ -324,16 +324,13 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
                         }
                 }
               //Detecta dónde está la mosca para ver qué clip correr
-             
               if ( perMosca.getX() > this.getWidth() /2) {
                   bUbicacionMosca = true;
-                  scSonidoMoscaD.setLooping(bUbicacionMosca);
-                  scSonidoMoscaD.play();                 
+                  scSonidoMoscaD.play();
                   scSonidoMoscaI.stop();
               }
               else {
                   bUbicacionMosca = false;
-                  scSonidoMoscaI.setLooping(bUbicacionMosca);
                   scSonidoMoscaI.play();
                   scSonidoMoscaD.stop();
               }
