@@ -51,8 +51,8 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
     private Personaje perScoreVidas;
     //Objeto personaje mosca aliada
     private Personaje perMosca;
-    //Dirección en la que se mueve el bate
-    private int iDireccionBate;
+    //Dirección en la que se mueve el crowbar
+    private int iDireccionCrowbar;
     //Dirección de la mosca
     private int iDireccionMosca;
     //Linked List para las charolas
@@ -61,10 +61,10 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
     private LinkedList lnkProyectiles;
     //Contador de puntos
     private int iScore;
-    //Contador para las veces que el bate ha sido colisionado (a cambiar
+    //Contador para las veces que el crowbar ha sido colisionado (a cambiar
     //por número de veces que la charola ha sido colisionada?
     private int iColisionesBate;
-    // Objeto SoundClip cuando la pelota colisiona con el bate o la pared
+    // Objeto SoundClip cuando la pelota colisiona con el crowbar o la pared
     private SoundClip scSonidoColisionPelota;  
     //Objeto SoundClip para cuando la charola es golpeada la primera vez
     private SoundClip scSonidoColisionCharolaGolpeada; 
@@ -87,7 +87,7 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
             this.getClass().getResource("Charola/charolarota.gif");
     //URL para cargar la imagen de la pelota
     private URL urlImagenPelota = 
-            this.getClass().getResource("pelota.gif");
+            this.getClass().getResource("proyectil.gif");
     //URL para cargar la imagen de pausa
     private URL urlImagenPausa = this.getClass().getResource("pause.png");
     //Imagen al pausar el juego.
@@ -153,16 +153,16 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
                 Toolkit.getDefaultToolkit().getImage(urlImagenMosca));
         perMosca.setVelocidad(7);
 
-        // se crea a Nena 
+        // se crea el crowbar
         perCrowbar = new Personaje(getWidth() / 2, getHeight() / 2,
                 Toolkit.getDefaultToolkit().getImage(urlImagenCrowbar));
-        //Se inicializa con velocidad 3
+        //Se inicializa con velocidad 7
         perCrowbar.setVelocidad(7);
         
-        perScoreVidas = new Personaje (40, 550 ,
+        perScoreVidas = new Personaje (40, 450 ,
                 Toolkit.getDefaultToolkit().getImage(urlImagenScoreVidas));
 
-        // se posiciona al bate en el centro de la pantalla y en la parte inferior
+        // se posiciona al crowbar en el centro de la pantalla y en la parte inferior
         perCrowbar.setX((getWidth() / 2) - (perCrowbar.getAncho() / 2));
 //        perCrowbar.setY((getHeight() / 2) - (perCrowbar.getAlto() / 2));
         perCrowbar.setY(getHeight() - perCrowbar.getAlto() -20);
@@ -211,8 +211,8 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
             lnkProyectiles.add(perProyectil);
         }
         
-        //creo el sonido del bate golpeando la pelota
-        scSonidoColisionPelota = new SoundClip("bate.wav");
+        //creo el sonido del crowbar golpeando la pelota
+        scSonidoColisionPelota = new SoundClip("tapa.wav");
         //creo el sonido  de la charola golpeada la primera vez
         scSonidoColisionCharolaGolpeada = new SoundClip("Charola/charolagolpeada.wav");
         //creo el sonido de la charola rompiéndose
@@ -304,7 +304,7 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
                 }
         
         //Nena actualiza movimiento dependiendo de la tecla que se presionó
-        switch (iDireccionBate) {
+        switch (iDireccionCrowbar) {
 //            case 1:
 //                perCrowbar.abajo();
 //                break;
@@ -561,8 +561,8 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
             g.setColor(Color.GREEN);
             Font fFont = new Font("Verdana", Font.BOLD, 18);
             g.setFont(fFont);
-            g.drawString( " : " +iScore, 160,595);
-            g.drawString( " : " +iVidas, 200,635);
+            g.drawString( " : " +iScore, 160,495);
+            g.drawString( " : " +iVidas, 200,535);
             
         }
         if (iVidas <= 0) {
@@ -614,7 +614,7 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
 
         fileOut.println(perCrowbar.getX());
         fileOut.println(perCrowbar.getY());
-        fileOut.println(iDireccionBate);
+        fileOut.println(iDireccionCrowbar);
         fileOut.println(iScore);
         fileOut.println(iVidas);
 
@@ -674,7 +674,7 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
 
                 perCrowbar.setX(Integer.parseInt(fileIn.readLine()));
                 perCrowbar.setY(Integer.parseInt(fileIn.readLine()));
-                iDireccionBate = (Integer.parseInt(fileIn.readLine()));
+                iDireccionCrowbar = (Integer.parseInt(fileIn.readLine()));
                 iScore = (Integer.parseInt(fileIn.readLine()));
                 iVidas = (Integer.parseInt(fileIn.readLine()));
             }
@@ -692,11 +692,11 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
         //To change body of generated methods, choose Tools | Templates.
         // si presiono flecha para Derecha
         if (keyEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
-            iDireccionBate = 3;  // cambio la dirección hacia derecha
+            iDireccionCrowbar = 3;  // cambio la dirección hacia derecha
         }
         // si presiono flecha para Izquierda
         if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT) {
-            iDireccionBate = 4;   // cambio la dirección hacia izq
+            iDireccionCrowbar = 4;   // cambio la dirección hacia izq
         }
     }
 
@@ -704,18 +704,18 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
     public void keyReleased(KeyEvent keyEvent) {
 //        // si presiono flecha para abajo
 //        if (keyEvent.getKeyCode() == KeyEvent.VK_S) {
-//            iDireccionBate = 1;  // cambio la dirección hacia abajo
+//            iDireccionCrowbar = 1;  // cambio la dirección hacia abajo
 //        }
 //        // si presiono flecha para arriba
 //        if (keyEvent.getKeyCode() == KeyEvent.VK_W) {
-//            iDireccionBate = 2;   // cambio la dirección hacia arriba
+//            iDireccionCrowbar = 2;   // cambio la dirección hacia arriba
 //        }
         if (keyEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
-            iDireccionBate = 5;  // cambio la dirección hacia derecha
+            iDireccionCrowbar = 5;  // cambio la dirección hacia derecha
         }
         // si presiono flecha para Izquierda
         if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT) {
-            iDireccionBate = 5;   // cambio la dirección hacia izq
+            iDireccionCrowbar = 5;   // cambio la dirección hacia izq
         }
         //Si presionan P booleano Pausa cambia de estado.
         if (keyEvent.getKeyCode() == KeyEvent.VK_P) {
