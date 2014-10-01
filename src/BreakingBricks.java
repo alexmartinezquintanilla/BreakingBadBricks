@@ -72,10 +72,14 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
     private SoundClip scSonidoColisionCharolaRota; 
     //Objeto SoundClip para la música de fondo
     private SoundClip scSonidoBGM; 
+    //Objeto Soundclip para cuando la mosca está en la derecha
+    private SoundClip scSonidoMoscaD;
+    //Objeto SoundClip para cuando la mosca está en la izquierda
+    private SoundClip scSonidoMoscaI;
     //Boleano para pausar el juego.
     private boolean bPausado;    
     //URL para cargar imagen de la mosca
-    private URL urlImagenMosca = this.getClass().getResource("mosco.gif");
+    private URL urlImagenMosca = this.getClass().getResource("Mosca/mosco.gif");
     //URL para cargar imagen de la charola
     private URL urlImagenCharola = 
             this.getClass().getResource("Charola/charola.png");
@@ -103,6 +107,8 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
     private int iMovY;
     //Booleana para saber si el juego comenzó o no
     private boolean bGameStarted;
+    //Ubicación de la mosca para sonido estereo: True = Der. False = Izq
+    private boolean bUbicacionMosca;
 
     //Constructor de BreakingBricks
     public BreakingBricks() {
@@ -146,12 +152,18 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
         URL urlImagenCrowbar = this.getClass().getResource("crowbar.png");
         
         //se crea la imagen de la msoca
-        URL urlImagenMosca = this.getClass().getResource("mosco.gif");
+        URL urlImagenMosca = this.getClass().getResource("Mosca/mosco.gif");
         
         //se crea el personaje mosca
         perMosca = new Personaje((int) (Math.random() * (this.getWidth() - 1) + 1), (int) (Math.random() * (this.getHeight() - 1) + 1),
                 Toolkit.getDefaultToolkit().getImage(urlImagenMosca));
         perMosca.setVelocidad(7);
+        if ( perMosca.getX() > this.getWidth() /2) {
+            bUbicacionMosca = true;
+        }
+        else {
+            bUbicacionMosca = false;
+        }
 
         // se crea el crowbar
         perCrowbar = new Personaje(getWidth() / 2, getHeight() / 2,
@@ -217,9 +229,18 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
         scSonidoColisionCharolaGolpeada = new SoundClip("Charola/charolagolpeada.wav");
         //creo el sonido de la charola rompiéndose
         scSonidoColisionCharolaRota = new SoundClip("Charola/charolarota.wav");
+        //Creo el sonido para la música de fondo; lo loopeo y lo inicio.
         scSonidoBGM = new SoundClip("BGM.wav");
         scSonidoBGM.setLooping(true);
         scSonidoBGM.play();
+        //Creo el sonido para cuando la mosca estará en la derecha y loopeo
+        scSonidoMoscaD = new SoundClip("Mosca/moscaderecha.wav");
+        scSonidoMoscaD.setLooping(bUbicacionMosca);
+        //Creo el sonido para cuando la mosca estará en la izquierda y loopeo
+        scSonidoMoscaI = new SoundClip ("Mosca/moscaizquierda.wav");
+        scSonidoMoscaI.setLooping(!bUbicacionMosca);
+        
+        //Inicializo la dirección de la mosca como 0
         iDireccionMosca = 0;
         addKeyListener(this);
     }
@@ -302,6 +323,20 @@ public class BreakingBricks extends JFrame implements Runnable, KeyListener {
                               break; //se mueve hacia la derecha
                         }
                 }
+              //Detecta dónde está la mosca para ver qué clip correr
+             
+              if ( perMosca.getX() > this.getWidth() /2) {
+                  bUbicacionMosca = true;
+                  scSonidoMoscaD.setLooping(bUbicacionMosca);
+                  scSonidoMoscaD.play();                 
+                  scSonidoMoscaI.stop();
+              }
+              else {
+                  bUbicacionMosca = false;
+                  scSonidoMoscaI.setLooping(bUbicacionMosca);
+                  scSonidoMoscaI.play();
+                  scSonidoMoscaD.stop();
+              }
         
         //Nena actualiza movimiento dependiendo de la tecla que se presionó
         switch (iDireccionCrowbar) {
